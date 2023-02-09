@@ -1,0 +1,53 @@
+---
+title: "GoalSelection"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(skimr)
+```
+
+```{r dataframe}
+goalratings <- read_sav("TransposedGoals.sav")
+```
+
+
+## Scatterplot of Goal Ratings
+
+```{r scatterplot}
+#avg. rating for dishonesty x avg. rating for honesty
+
+ggplot(data = goalratings,
+       mapping = aes(x = Avg_DisLikelihood, y = Avg_HonLikelihood)) +
+  geom_point() +
+  labs(x = "Likelihood that dishonesty would acheive goal", y = "Likelihood that honesty would acheive goal")
+```
+
+## Filtering Goals That Pull In Both Directions
+
+
+```{r filtering}
+goalratings %>%
+  arrange(desc(Diff_Likelihood))
+
+goalratings <- goalratings %>%
+  filter(Diff_Likelihood <= 2.14) %>%
+  filter(Diff_Likelihood >= -1.43) %>%
+  arrange(desc(Diff_Likelihood))
+
+ggplot(data = goalratings,
+       mapping = aes(x = Avg_DisLikelihood, y = Avg_HonLikelihood)) +
+  geom_point() +
+  labs(x = "Likelihood that dishonesty would acheive goal", y = "Likelihood that honesty would acheive goal")
+
+
+
+```
+
+
+```{r}
+skimr::skim(TransposedGoals)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
