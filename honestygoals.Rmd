@@ -18,10 +18,13 @@ goalratings <- read_sav("TransposedGoals.sav")
 ```{r scatterplot}
 #avg. rating for dishonesty x avg. rating for honesty
 
+goalratings <- goalratings %>%
+  mutate(init_S2goals = if_else(Diff_Likelihood >= -1.43 & Diff_Likelihood <= 2.14, "Study 2", "Study 3"))
+
 ggplot(data = goalratings,
-       mapping = aes(x = Avg_DisLikelihood, y = Avg_HonLikelihood)) +
+       mapping = aes(x = Avg_DisLikelihood, y = Avg_HonLikelihood, color = init_S2goals)) +
   geom_point() +
-  labs(x = "Likelihood that dishonesty would acheive goal", y = "Likelihood that honesty would acheive goal")
+  labs(title = "Scatterplot of Goal Ratings", x = "Dishonesty Likelihood", y = "Honesty Likelihood", color = "Goals")
 ```
 
 ## Filtering Goals That Pull In Both Directions
@@ -31,15 +34,13 @@ ggplot(data = goalratings,
 goalratings %>%
   arrange(desc(Diff_Likelihood))
 
+#filter the middle 50% of goals based on difference scores. This will reveal the 50% of goals that, on average, are rated to be similarly likely to be achieved by honesty and dishonesty.
+
 goalratings <- goalratings %>%
   filter(Diff_Likelihood <= 2.14) %>%
   filter(Diff_Likelihood >= -1.43) %>%
-  arrange(desc(Diff_Likelihood))
+  arrange(desc(Avg_HonLikelihood))
 
-ggplot(data = goalratings,
-       mapping = aes(x = Avg_DisLikelihood, y = Avg_HonLikelihood)) +
-  geom_point() +
-  labs(x = "Likelihood that dishonesty would acheive goal", y = "Likelihood that honesty would acheive goal")
 
 
 
